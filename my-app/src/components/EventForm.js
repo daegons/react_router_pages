@@ -1,12 +1,13 @@
 import {
   Form,
-  json,
-  redirect,
-  useActionData,
   useNavigate,
   useNavigation,
+  useActionData,
+  json,
+  redirect
 } from 'react-router-dom';
 
+import { getAuthToken } from '../util/auth';
 import classes from './EventForm.module.css';
 
 function EventForm({ method, event }) {
@@ -74,7 +75,7 @@ function EventForm({ method, event }) {
           Cancel
         </button>
         <button disabled={isSubmitting}>
-          {isSubmitting ? '제출중..' : '저장'}
+          {isSubmitting ? 'Submitting...' : 'Save'}
         </button>
       </div>
     </Form>
@@ -97,14 +98,16 @@ export async function action({ request, params }) {
   let url = 'http://localhost:8080/events';
 
   if (method === 'PATCH') {
-    const id = params.id;
-    url = 'http://localhost:8080/events/' + id;
+    const eventId = params.eventId;
+    url = 'http://localhost:8080/events/' + eventId;
   }
 
+  const token = getAuthToken();
   const response = await fetch(url, {
     method: method,
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
     },
     body: JSON.stringify(eventData),
   });
@@ -114,7 +117,8 @@ export async function action({ request, params }) {
   }
 
   if (!response.ok) {
-    throw json({ message: '이벤트 저장 불가' }, { status: 500 });
+    throw json({ message: 'Could not save event.' }, { status: 500 });
   }
+
   return redirect('/events');
 }

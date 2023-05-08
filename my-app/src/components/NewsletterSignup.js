@@ -1,6 +1,7 @@
-import { useFetcher } from 'react-router-dom';
-import classes from './NewsletterSignup.module.css';
 import { useEffect } from 'react';
+import { useFetcher } from 'react-router-dom';
+
+import classes from './NewsletterSignup.module.css';
 
 function NewsletterSignup() {
   const fetcher = useFetcher();
@@ -14,8 +15,8 @@ function NewsletterSignup() {
 
   return (
     <fetcher.Form
-      action="/newsletter"
       method="post"
+      action="/newsletter"
       className={classes.newsletter}
     >
       <input
